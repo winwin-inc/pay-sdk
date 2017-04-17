@@ -5,7 +5,7 @@
         "php": ">= 5.6",
         "guzzlehttp/guzzle": "^6.2",
         "psr/log": "^1.0",
-        "winwin/support": "dev-master"
+        "winwin/support": "^0.1"
     },
     "require-dev": {
         "phpunit/phpunit": "^5.0"
@@ -19,7 +19,5 @@
         "psr-4": {
             "winwin\\pay\\sdk\\": "tests/"
         }
-    },
-    "minimum-stability": "dev",
-    "prefer-stable": true
+    }
 }

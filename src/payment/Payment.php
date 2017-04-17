@@ -8,6 +8,7 @@ use GuzzleHttp\Psr7\Response;
 use winwin\pay\sdk\core\Util;
 use winwin\pay\sdk\Config;
 use winwin\pay\sdk\core\FaultException;
+use winwin\support\XML;
 
 class Payment
 {
@@ -82,13 +83,17 @@ class Payment
         $successful = $notify->get('result_code') === 'SUCCESS';
 
         $handleResult = call_user_func_array($callback, [$notify, $successful]);
+        $result = [
+            'version' => Config::VERSION,
+        ];
 
-        if (is_bool($handleResult) && $handleResult) {
-            $body = 'success';
+        if ($handleResult === true) {
+            $result['return_code'] = 'SUCCESS';
         } else {
-            $body = 'failure';
+            $result['return_code'] = 'FAIL';
+            $result['return_msg'] = $handleResult;
         }
 
-        return new Response(200, [], $body);
+        return new Response(200, [], XML::build($result));
     }
 }
