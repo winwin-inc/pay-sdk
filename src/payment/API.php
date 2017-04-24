@@ -5,8 +5,8 @@ namespace winwin\pay\sdk\payment;
 use winwin\pay\sdk\core\Http;
 use winwin\pay\sdk\core\Util;
 use winwin\pay\sdk\Config;
-use winwin\support\XML;
-use winwin\support\Collection;
+use winwin\pay\sdk\support\XML;
+use winwin\pay\sdk\support\Collection;
 use Psr\Http\Message\ResponseInterface;
 
 class API

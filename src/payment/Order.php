@@ -1,7 +1,7 @@
 <?php
 namespace winwin\pay\sdk\payment;
 
-use winwin\support\Attribute;
+use winwin\pay\sdk\support\Attribute;
 
 class Order extends Attribute
 {

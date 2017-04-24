@@ -2,7 +2,7 @@
 
 namespace winwin\pay\sdk;
 
-use winwin\support\Attribute;
+use winwin\pay\sdk\support\Attribute;
 
 class Config extends Attribute
 {

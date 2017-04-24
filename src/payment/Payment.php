@@ -8,9 +8,11 @@ use GuzzleHttp\Psr7\Response;
 use winwin\pay\sdk\core\Util;
 use winwin\pay\sdk\Config;
 use winwin\pay\sdk\core\FaultException;
-use winwin\support\XML;
+use winwin\pay\sdk\support\XML;
+use Psr\Log\LoggerAwareInterface;
+use Psr\Log\LoggerInterface;
 
-class Payment
+class Payment implements LoggerAwareInterface
 {
     /**
      * @var API
@@ -30,6 +32,11 @@ class Payment
     public function __construct(Config $config)
     {
         $this->api = new API($config);
+    }
+
+    public function setLogger(LoggerInterface $logger)
+    {
+        $this->api->getHttp()->setLogger($logger);
     }
 
     public function getRequest()
