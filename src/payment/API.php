@@ -82,6 +82,54 @@ class API
     }
 
     /**
+     * Order Query.
+     *
+     * @param OrderQuery $orderQuery
+     *
+     * @return Collection
+     */
+    public function query(OrderQuery $orderQuery)
+    {
+        return $this->request($orderQuery->all());
+    }
+
+    /**
+     * Order Refund.
+     *
+     * @param Refund $refund
+     *
+     * @return Collection
+     */
+    public function refund(Refund $refund)
+    {
+        return $this->request($refund->all());
+    }
+
+    /**
+     * Refund Order Query.
+     *
+     * @param RefundQuery $refundQuery
+     *
+     * @return Collection
+     */
+    public function queryRefund(RefundQuery $refundQuery)
+    {
+        return $this->request($refundQuery->all());
+    }
+
+    /**
+     * Close Order.
+     *
+     * @param CloseOrder $closeOrder
+     *
+     * @return Collection
+     */
+    public function close(CloseOrder $closeOrder)
+    {
+        return $this->request($closeOrder->all());
+    }
+
+    /**
      * Make a API request.
      *
      * @param string $api
