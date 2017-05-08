@@ -62,6 +62,63 @@ echo $response->getBody();
 
 `handleNotify` 返回值 `$response` 是一个 [PSR-7](http://www.php-fig.org/psr/psr-7/) Response 对象。
 
+## 订单查询
+
+```php
+use winwin\pay\sdk\payment\OrderQuery;
+
+$result = $payment->query(new OrderQuery([
+    'mch_id' => $merchant_id,
+    'method' => 'trade.query',
+    'transaction_id' => '平台订单号',
+    'out_trade_no' => '商户订单号',
+]));
+```
+
+## 关闭订单
+
+```php
+use winwin\pay\sdk\payment\CloseOrder;
+
+$result = $payment->close(new CloseOrder([
+    'mch_id' => $merchant_id,
+    'method' => 'trade.close',
+    'out_trade_no' => '商户订单号',
+]));
+```
+
+## 退款
+
+```php
+use winwin\pay\sdk\payment\Refund;
+
+$result = $payment->refund(new Refund([
+    'mch_id' => $merchant_id,
+    'method' => 'trade.refund',
+    'transaction_id' => '平台订单号',
+    'out_trade_no' => '商户订单号',
+    'out_refund_no' => '商户退款单号',
+    'total_fee' => 1,
+    'refund_fee' => 1,
+    'op_user_id' => $merchant_id,
+]));
+```
+
+## 退款查询
+
+```php
+use winwin\pay\sdk\payment\RefundQuery;
+
+$result = $payment->queryRefund(new RefundQuery([
+    'mch_id' => $merchant_id,
+    'method' => 'trade.refund.query',
+    'transaction_id' => '平台订单号',
+    'out_trade_no' => '商户订单号',
+    'out_refund_no' => '商户退款单号',
+    'refund_id' => '平台退款单号',
+]));
+```
+
 ## 调试
 
 如果需要打印 http 请求日志，可使用 [PSR-3](http://www.php-fig.org/psr/psr-3/) 实现库，例如 [Monolog](https://github.com/Seldaek/monolog) ：
