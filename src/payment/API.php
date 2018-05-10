@@ -3,8 +3,15 @@
 namespace winwin\pay\sdk\payment;
 
 use winwin\pay\sdk\core\Http;
-use winwin\pay\sdk\core\Util;
+use winwin\pay\sdk\support\Util;
+use winwin\pay\sdk\constants\TradeMethod;
 use winwin\pay\sdk\Config;
+use winwin\pay\sdk\requests\Order;
+use winwin\pay\sdk\requests\OrderQuery;
+use winwin\pay\sdk\requests\OrderReverse;
+use winwin\pay\sdk\requests\OrderClose;
+use winwin\pay\sdk\requests\Refund;
+use winwin\pay\sdk\requests\RefundQuery;
 use winwin\pay\sdk\support\XML;
 use winwin\pay\sdk\support\Collection;
 use Psr\Http\Message\ResponseInterface;
@@ -66,14 +73,15 @@ class API
     }
 
     /**
-     * Prepare order to pay.
+     * 微信JS支付预下单
      *
      * @param Order $order
      *
      * @return Collection
      */
-    public function prepare(Order $order)
+    public function weixinPrepare(Order $order)
     {
+        $order->method = TradeMethod::WEIXIN_JSAPI;
         if (is_null($order->spbill_create_ip)) {
             $order->spbill_create_ip = Util::getServerIp();
         }
@@ -82,19 +90,114 @@ class API
     }
 
     /**
-     * Order Query.
+     * 支付宝JS支付预下单
      *
-     * @param OrderQuery $orderQuery
+     * @param Order $order
      *
      * @return Collection
      */
-    public function query(OrderQuery $orderQuery)
+    public function alipayPrepare(Order $order)
     {
-        return $this->request($orderQuery->all());
+        $order->method = TradeMethod::ALIPAY_JSAPI;
+        if (is_null($order->spbill_create_ip)) {
+            $order->spbill_create_ip = Util::getServerIp();
+        }
+
+        return $this->request($order->all());
     }
 
     /**
-     * Order Refund.
+     * 微信扫码支付预下单
+     *
+     * @param Order $order
+     *
+     * @return Collection
+     */
+    public function weixinPrepareQr(Order $order)
+    {
+        $order->method = TradeMethod::WEIXIN_QR;
+        if (is_null($order->spbill_create_ip)) {
+            $order->spbill_create_ip = Util::getServerIp();
+        }
+
+        return $this->request($order->all());
+    }
+
+    /**
+     * 支付宝扫码支付预下单
+     *
+     * @param Order $order
+     *
+     * @return Collection
+     */
+    public function alipayPrepareQr(Order $order)
+    {
+        $order->method = TradeMethod::ALIPAY_QR;
+        if (is_null($order->spbill_create_ip)) {
+            $order->spbill_create_ip = Util::getServerIp();
+        }
+
+        return $this->request($order->all());
+    }
+
+    /**
+     * 关闭预下单
+     *
+     * @param OrderClose $close
+     *
+     * @return Collection
+     */
+    public function close(OrderClose $close)
+    {
+        $close->method = TradeMethod::CLOSE;
+        return $this->request($close->all());
+    }
+
+    /**
+     * 刷卡支付
+     *
+     * @param Order $order
+     *
+     * @return Collection
+     */
+    public function micropay(Order $order)
+    {
+        $order->method = TradeMethod::MICRO_PAY;
+        if (is_null($order->spbill_create_ip)) {
+            $order->spbill_create_ip = Util::getServerIp();
+        }
+
+        return $this->request($order->all());
+    }
+
+    /**
+     * 撤消订单
+     * @param OrderReverse $reverse
+     * @return Collection
+     */
+    public function reverse(OrderReverse $reverse)
+    {
+        $reverse->method = TradeMethod::REVERSE;
+        return $this->request($reverse->all());
+    }
+
+
+    /**
+     * 订单查询
+     *
+     * @param OrderQuery $query
+     * @param string $outTradeNo
+     *
+     * @return Collection
+     */
+    public function query(OrderQuery $query)
+    {
+        $query->method = TradeMethod::QUERY;
+        return $this->request($query->all());
+    }
+
+    /**
+     * 退款
      *
      * @param Refund $refund
      *
@@ -102,11 +205,12 @@ class API
      */
     public function refund(Refund $refund)
     {
+        $refund->method = TradeMethod::REFUND;
         return $this->request($refund->all());
     }
 
     /**
-     * Refund Order Query.
+     * 退款查询
      *
      * @param RefundQuery $refundQuery
      *
@@ -114,20 +218,10 @@ class API
      */
     public function queryRefund(RefundQuery $refundQuery)
     {
+        $refundQuery->method = TradeMethod::REFUND_QUERY;
         return $this->request($refundQuery->all());
     }
 
-    /**
-     * Close Order.
-     *
-     * @param CloseOrder $closeOrder
-     *
-     * @return Collection
-     */
-    public function close(CloseOrder $closeOrder)
-    {
-        return $this->request($closeOrder->all());
-    }
 
     /**
      * Make a API request.
@@ -140,7 +234,7 @@ class API
      *
      * @return Collection|\Psr\Http\Message\ResponseInterface
      */
-    protected function request(array $params, $method = 'post', array $options = [], $returnResponse = false)
+    public function request(array $params, $method = 'post', array $options = [], $returnResponse = false)
     {
         $params = array_merge($params, $this->config->only(['appid', 'charset', 'sign_type', 'version']));
 

@@ -2,8 +2,6 @@
 
 namespace winwin\pay\sdk\support;
 
-use function winwin\pay\sdk\support\snake_case;
-
 /**
  * Borrow from \EasyWeChat\Support\Attribute.
  */
@@ -80,7 +78,7 @@ abstract class Attribute extends Collection
      */
     public function with($attribute, $value)
     {
-        $this->snakeable && $attribute = snake_case($attribute);
+        $this->snakeable && $attribute = Util::snakeCase($attribute);
 
         if (!$this->validate($attribute, $value)) {
             throw new \InvalidArgumentException("Invalid attribute '{$attribute}'.");

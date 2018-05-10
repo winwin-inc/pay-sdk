@@ -2,8 +2,6 @@
 
 namespace winwin\pay\sdk\support;
 
-use function winwin\pay\sdk\support\snake_case;
-
 trait ArrayableTrait
 {
     public function jsonSerialize()
@@ -17,7 +15,7 @@ trait ArrayableTrait
         foreach (get_object_vars($this) as $key => $val) {
             if (isset($val)) {
                 if ($keySnakeCase) {
-                    $key = snake_case($key);
+                    $key = Util::snakeCase($key);
                 }
                 if ($val instanceof Arrayable) {
                     $values[$key] = $val->toArray($keySnakeCase);

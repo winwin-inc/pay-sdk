@@ -140,11 +140,10 @@ class Http implements LoggerAwareInterface
 
     protected function logMiddleware()
     {
-        return Middleware::tap(function (RequestInterface $request, $options) {
-            $this->logger && $this->logger->debug("Request: {$request->getMethod()} {$request->getUri()}", [
-                'headers' => $request->getHeaders(),
-                'body' => $request->getMethod() == 'POST' ? (string)$request->getBody() : ''
-            ]);
-        });
+        if ($this->logger) {
+            return Middleware::log($this->logger, new \GuzzleHttp\MessageFormatter(\GuzzleHttp\MessageFormatter::DEBUG));
+        } else {
+            return Middleware::tap();
+        }
     }
 }
